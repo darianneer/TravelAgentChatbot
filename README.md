@@ -1,50 +1,62 @@
-# README: Travel Agent Chatbot
+# Travel Chatbot
 
-This demonstrates a prompt quality evaluation system built using `langchain-google-genai` and the Gemini API. It allows users to assess the quality of a given prompt based on several criteria and provides suggestions for improvement.
+This notebook implements a simple travel chatbot using the `langchain-google-genai` library. The chatbot is designed to answer travel-related questions and manages conversation history by periodically summarizing it to conserve context.
 
-## How It Works
+## Features
 
-The system uses a `ChatGoogleGenerativeAI` model (specifically `gemini-2.5-flash`) with a predefined system prompt that acts as a "prompt expert engineer." This expert evaluates user-provided prompts against the following criteria, scoring each from 0-10:
+- **Travel-specific responses**: The chatbot is configured to only answer questions related to travel (flights, hotels, destinations, trips, itineraries, visas, packing, and travel tips).
+- **Conversation summarization**: To manage the context window, the chat history is summarized every 5 turns.
+- **Interactive chat interface**: A command-line interface allows users to interact with the chatbot, quit, or reset the conversation.
 
-1.  **Clarity**: Is the prompt easy to understand and does it have a clear goal?
-2.  **Specificity/Details**: Does it provide sufficient details and requirements?
-3.  **Context**: Is background information, audience, or use case mentioned?
-4.  **Output Format & Constraints**: Are expected output format, tone, or length specified?
-5.  **Persona Defined**: Does the prompt assign a specific role to the AI?
+## Setup
 
-This then computes a **Final Score** (average of all five criteria) and provides a **Short Explanation** along with **2-3 suggestions to improve the prompt**.
+### 1. Install Dependencies
 
-## Setup and Usage
+Run the first cell in the notebook to install the necessary library:
 
-1.  **Install Dependencies**: The first cell (`Ci4Ko5Mip2Rv`) installs the necessary `langchain-google-genai` library.
-2.  **Google API Key**: You need to set your Gemini API key in Colab secrets. 
-    *   Click the "🔑" icon in the left sidebar.
-    *   Add a new secret named `GEMINI_API_KEY`.
-    *   Paste your API key as the value. 
-    *   Ensure "Notebook access" is enabled for this secret.
+```python
+!pip install langchain-google-genai
+```
 
-    The cell `qQ3O0kckqCT-` retrieves this key and initializes the `ChatGoogleGenerativeAI` model.
-3.  **Define the Evaluation Prompt**: Cell `lRfPU8h_qF0h` defines the `prompt_template` that structures the evaluation process for the AI.
-4.  **Evaluate Your Prompt**: 
-    *   In cell `U1x1X08dqJvZ`, modify the `inputPrompt` variable within `prompt_template.format_prompt()` to the prompt you want to evaluate.
-    *   Run this cell to format the prompt for the LLM.
-5.  **Get the Evaluation**: Run cell `hWQBpGMMqL_B` to invoke the LLM with your prompt and display the evaluation results, including scores, explanation, and improvement suggestions.
+### 2. Google API Key
 
-## Example Evaluation Output
+You need a Google API key for the `langchain-google-genai` library to function. 
 
-Final Score: 4.8/10
+- Create a key in [Google AI Studio](https://aistudio.google.com/app/apikey).
+- Add the key to Colab's secrets manager. Click the "🔑" icon in the left panel, and add your API key with the name `GEMINI_API_KEY`.
 
-Scores of each quality criterion:
+### 3. Run the Notebook Cells
 
-Clarity: 8/10
-Specificity/Details: 2/10
-Context: 1/10
-Output Format & Constraints: 3/10
-Persona Defined: 10/10
-Short Explanation: The prompt successfully defines a clear persona and outlines general goals for code analysis and improvement. However, it critically lacks specificity regarding the actual code to be analyzed, its context, and concrete definitions for terms like "perfect," "scalable," or "works everywhere." The output constraints are also quite vague.
+Execute all the code cells sequentially. This will:
 
-2-3 suggestions to improve the prompt:
+- Import necessary libraries.
+- Configure the `GOOGLE_API_KEY` from Colab's secrets.
+- Initialize two `ChatGoogleGenerativeAI` models: one for the main chat (streaming enabled) and one for summarization (streaming disabled).
+- Define the system prompt for the travel agent and create prompt templates for both the main chat and summarization.
+- Set up helper functions for managing and summarizing chat history.
+- Start the interactive chat loop.
 
-Provide the actual code: This is the most crucial missing element. Without the code, the prompt is unactionable.
-Add context about the code: Specify the programming language, framework, purpose of the code, current known issues, and target environment/audience.
-Define "perfect," "scalable," and "everywhere" more concretely: Provide specific metrics, performance targets, or target platforms/environments. Clarify what "not too long" means for explanations (e.g., max X paragraphs, focus on key changes).
+## Usage
+
+After running all cells, an interactive prompt will appear:
+
+```
+Travel Chatbot — type 'quit' or 'exit' to stop, 'reset' to clear history.
+
+You: 
+```
+
+- Type your travel-related questions into the prompt.
+- The chatbot will stream its response.
+- To clear the conversation history, type `reset`.
+- To end the chat, type `quit` or `exit`.
+
+## Code Structure
+
+- Installs `langchain-google-genai`.
+- Imports necessary libraries.
+- Sets up the `GOOGLE_API_KEY` and initializes the LLM models.
+- Defines the system prompt and prompt templates.
+- Contains functions for managing and summarizing chat history.
+- Implements the `chat` and `reset_chat` functions.
+- The main loop for interacting with the chatbot.
